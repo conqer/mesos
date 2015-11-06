@@ -1,41 +1,14 @@
-#
-# Dockerfile for building Mesos from source
-#
-# Create snapshot builds with:
-# docker build -t mesos/mesos:git-`git rev-parse --short HEAD` .
-#
-# Run master/slave with:
-# docker run mesos/mesos:git-`git rev-parse --short HEAD` mesos-master [options]
-# docker run mesos/mesos:git-`git rev-parse --short HEAD` mesos-slave [options]
-#
-FROM ubuntu:14.04
-MAINTAINER Gabriel Monroy <gabriel@opdemand.com>
-
-# build packages
-ENV DEBIAN_FRONTEND noninteractive
+FROM ubuntu
+RUN rm -rf /var/lib/apt/lists/extras.ubuntu.com_ubuntu_dists_trusty_main_binary-amd64_Packages /var/lib/apt/lists/extras.ubuntu.com_ubuntu_dists_trusty_main_binary-i386_Packages /var/lib/apt/lists/extras.ubuntu.com_ubuntu_dists_trusty_main_source_Sources /var/lib/apt/lists/extras.ubuntu.com_ubuntu_dists_trusty_Release /var/lib/apt/lists/extras.ubuntu.com_ubuntu_dists_trusty_Release.gpg /var/lib/apt/lists/get.docker.com_ubuntu_dists_docker_main_binary-amd64_Packages /var/lib/apt/lists/get.docker.com_ubuntu_dists_docker_main_binary-i386_Packages /var/lib/apt/lists/get.docker.com_ubuntu_dists_docker_Release /var/lib/apt/lists/get.docker.com_ubuntu_dists_docker_Release.gpg /var/lib/apt/lists/lock /var/lib/apt/lists/partial /var/lib/apt/lists/ppa.launchpad.net_webupd8team_java_ubuntu_dists_trusty_InRelease /var/lib/apt/lists/ppa.launchpad.net_webupd8team_java_ubuntu_dists_trusty_main_binary-amd64_Packages /var/lib/apt/lists/ppa.launchpad.net_webupd8team_java_ubuntu_dists_trusty_main_binary-i386_Packages /var/lib/apt/lists/ppa.launchpad.net_webupd8team_java_ubuntu_dists_trusty_main_i18n_Translation-en /var/lib/apt/lists/repos.mesosphere.io_ubuntu_dists_trusty_InRelease /var/lib/apt/lists/repos.mesosphere.io_ubuntu_dists_trusty_main_binary-amd64_Packages /var/lib/apt/lists/repos.mesosphere.io_ubuntu_dists_trusty_main_binary-i386_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_InRelease /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_main_binary-i386_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_main_i18n_Translation-en /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_multiverse_binary-amd64_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_multiverse_binary-i386_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_multiverse_i18n_Translation-en /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_multiverse_source_Sources /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_restricted_binary-amd64_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_restricted_binary-i386_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_restricted_i18n_Translation-en /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_restricted_source_Sources /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-i386_Packages /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_universe_i18n_Translation-en /var/lib/apt/lists/security.ubuntu.com_ubuntu_dists_trusty-security_universe_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_InRelease /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_main_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_main_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_main_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_main_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_multiverse_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_multiverse_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_multiverse_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_multiverse_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_restricted_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_restricted_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_restricted_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_restricted_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_universe_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_universe_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_universe_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-backports_universe_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_main_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_main_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_main_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_main_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_multiverse_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_multiverse_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_multiverse_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_multiverse_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_Release /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_Release.gpg /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_restricted_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_restricted_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_restricted_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_restricted_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_universe_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_universe_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_universe_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty_universe_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_InRelease /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_main_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_multiverse_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_multiverse_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_multiverse_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_multiverse_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_restricted_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_restricted_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_restricted_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_restricted_source_Sources /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-i386_Packages /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_i18n_Translation-en /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_source_Sources
 RUN apt-get update
-RUN apt-get install -yq build-essential autoconf libtool zlib1g-dev
-RUN apt-get install -yq libcurl4-nss-dev libsasl2-dev
-RUN apt-get install -yq openjdk-6-jdk maven
-RUN apt-get install -yq python-dev python-boto
-RUN apt-get install -yq libsvn-dev libapr1-dev
-
-# export environment
-ENV JAVA_HOME /usr/lib/jvm/java-6-openjdk-amd64
-
-# include libmesos on library path
-ENV LD_LIBRARY_PATH /usr/local/lib
-
-# copy local checkout into /opt
-ADD . /opt
-
-WORKDIR /opt
-
-# configure
-RUN ./bootstrap
-RUN mkdir build && cd build && ../configure
-
-WORKDIR /opt/build
-
-# build and cleanup in a single layer
-RUN make -j4 install && cd / && rm -rf /opt
+RUN apt-get -y install build-essential clang git maven autoconf libtool
+RUN apt-get -y install openjdk-7-jdk python-dev python-boto libcurl4-nss-dev libsasl2-dev libapr1-dev libsvn-dev libevent-dev libev-dev
+RUN adduser --disabled-password --gecos '' mesos
+ENV GTEST_FILTER -FsTest.FileSystemTableRead
+ENV CC gcc
+ENV CXX g++
+WORKDIR mesos
+COPY . /mesos/
+RUN chown -R mesos /mesos
+USER mesos
+CMD ./bootstrap && ./configure --enable-libev --enable-libevent --enable-ssl --verbose && DISTCHECK_CONFIGURE_FLAGS="--enable-libev --enable-libevent --enable-ssl --verbose" GLOG_v=1 MESOS_VERBOSE=1 make -j8 distcheck

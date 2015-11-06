@@ -94,6 +94,8 @@ def apply_reviews(review_request, applied):
 def post_review(review_request, message):
     print "Posting review: %s" % message
 
+    return
+
     review_url = review_request["links"]["reviews"]["href"]
     data = urllib.urlencode({'body_top' : message, 'public' : 'true'})
     api(review_url, data)
@@ -109,18 +111,18 @@ def cleanup():
 
 
 def verify_review(review_request):
-    print "Verifying review %s" % review_request["id"]
+    #print "Verifying review %s" % review_request["id"]
     try:
         # Recursively apply the review and its dependents.
         applied = []
-        apply_reviews(review_request, applied)
+        #apply_reviews(review_request, applied)
 
-        # Make sure build succeeds.
-        shell("./bootstrap")
-        shell("./configure")
+        # Launch docker build script.
 
-	# Make sure tests pass.
-        shell("make -j3 distcheck")
+        # TODO(jojy): Launch docker_build in subprocess so that verifications
+        # can be run parallely for various configurations.
+        configuration = "export OS=ubuntu;export CONFIGURATION=\"--enable-libev --enable-libevent --enable-ssl --verbose\";export COMPILER=gcc"
+        shell("%s; ./support/docker_build.sh" % configuration)
 
         # Success!
         post_review(
@@ -198,12 +200,13 @@ def needs_verification(review_request):
 
 
 if __name__=="__main__":
-    review_requests_url = "%s/api/review-requests/%s" % (REVIEWBOARD_URL, QUERY_PARAMS)
-
-    review_requests = api(review_requests_url)
-    num_reviews = 0
-    for review_request in reversed(review_requests["review_requests"]):
-        if (NUM_REVIEWS == -1 or num_reviews < NUM_REVIEWS) and \
-            needs_verification(review_request):
-            verify_review(review_request)
-            num_reviews += 1
+    apply_review(40158)
+    verify_review("")
+    #review_requests_url = "%s/api/review-requests/%s" % (REVIEWBOARD_URL, QUERY_PARAMS)
+    #review_requests = api(review_requests_url)
+    #num_reviews = 0
+    #for review_request in reversed(review_requests["review_requests"]):
+    #    if (NUM_REVIEWS == -1 or num_reviews < NUM_REVIEWS) and \
+    #        needs_verification(review_request):
+    #        verify_review(review_request)
+    #        num_reviews += 1
